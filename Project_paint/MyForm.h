@@ -585,7 +585,7 @@ namespace Projectpaint {
 				int dy = Math::Abs(startPoint->Y - e->Y);
 				ellipse(image, cv::Point(startPoint->X, startPoint->Y), cv::Size(dx, dy), Math::Atan2(dy, dx), 0, 360, CV_RGB(0, 255, 0));
 				break;
-			case DrawState::PencilDrawng:
+			case DrawState::PencilDrawing:
 				line(image, cv::Point(startPoint->X, startPoint->Y), cv::Point(e->X, e->Y), CV_RGB(0, 0, 255));
 				startPoint = gcnew System::Drawing::Point(e->X, e->Y);
 				break;
@@ -604,11 +604,14 @@ namespace Projectpaint {
 			switch (drawState) {
 			case DrawState::DrawLine:
 			case DrawState::DrawEllipse:
+			case DrawState::PencilDraw:
 				startPoint = gcnew System::Drawing::Point(e->X, e->Y);
 				if (drawState == DrawState::DrawLine)
 					drawState = DrawState::DrawingLine;
 				else if (drawState == DrawState::DrawEllipse)
 					drawState = DrawState::DrawingEllipse;
+				else if (drawState == DrawState::PencilDraw)
+					drawState = PencilDrawing;
 			case DrawState::FillBuget:
 				if (drawState == DrawState::FillBuget)
 					drawState = DrawStat::FillingBuget;
