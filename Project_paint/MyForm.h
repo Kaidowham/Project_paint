@@ -27,7 +27,9 @@ namespace Projectpaint {
 		enum class DrawState {
 			NotDrawing,
 			DrawLine, DrawingLine,
-			DrawEllipse, DrawingEllipse
+			DrawEllipse, DrawingEllipse,
+			PencilDraw, PencilDrawing,
+			FillBuget, FillingBuget
 		} drawState;
 	private: System::Windows::Forms::ToolStripSeparator^ toolStripSeparator2;
 	private: System::Windows::Forms::ToolStripSeparator^ toolStripSeparator3;
@@ -581,10 +583,14 @@ namespace Projectpaint {
 			case DrawState::DrawingEllipse:
 				int dx = Math::Abs(startPoint->X - e->X);
 				int dy = Math::Abs(startPoint->Y - e->Y);
-				ellipse(image, cv::Point(startPoint->X, startPoint->Y),
-					cv::Size(dx, dy),
-					Math::Atan2(dy, dx), 0, 360,
-					CV_RGB(0, 255, 0));
+				ellipse(image, cv::Point(startPoint->X, startPoint->Y), cv::Size(dx, dy), Math::Atan2(dy, dx), 0, 360, CV_RGB(0, 255, 0));
+				break;
+			case DrawState::PencilDrawng:
+				line(image, cv::Point(startPoint->X, startPoint->Y), cv::Point(e->X, e->Y), CV_RGB(0, 0, 255));
+				startPoint = gcnew System::Drawing::Point(e->X, e->Y);
+				break;
+			case DrawState::FillingBuget:
+				//fill code here
 				break;
 			}
 			// Unlock Bitmap Bits
@@ -601,13 +607,16 @@ namespace Projectpaint {
 				startPoint = gcnew System::Drawing::Point(e->X, e->Y);
 				if (drawState == DrawState::DrawLine)
 					drawState = DrawState::DrawingLine;
-				else
+				else if (drawState == DrawState::DrawEllipse)
 					drawState = DrawState::DrawingEllipse;
+			case DrawState::FillBuget:
+				if (drawState == DrawState::FillBuget)
+					drawState = DrawStat::FillingBuget;
 			}
 		}
 	}
 	private: System::Void pictureBox_MouseUp(System::Object^ sender, MouseEventArgs^ e) {
-		if ((drawState == DrawState::DrawingLine) || (drawState == DrawState::DrawingEllipse)) {
+		if ((drawState == DrawState::DrawingLine) || (drawState == DrawState::DrawingEllipse) || (drawState == DrawState::FillingBuget) || (drawState == DrawState::PincilDrawing)) {
 			delete startPoint;
 			startPoint = nullptr;
 			delete bmp;
@@ -625,10 +634,18 @@ namespace Projectpaint {
 	}
 	private: System::Void Pencil_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+		 if (bmp != nullptr) {
+                        drawState = DrawState::PencilDraw;
+                        Cursor = Cursors::Cross;
+                }
 
 	}
 	private: System::Void Fill_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+		 if (bmp != nullptr) {
+                        drawState = DrawState::FillBuget;
+                        Cursor = Cursors::Cross;
+                }
 
 	}
 };
