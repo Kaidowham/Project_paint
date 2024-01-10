@@ -319,7 +319,6 @@ namespace Projectpaint {
 			// 
 			// drawLineToolStripMenuItem
 			// 
-			this->drawLineToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"drawLineToolStripMenuItem.Image")));
 			this->drawLineToolStripMenuItem->Name = L"drawLineToolStripMenuItem";
 			this->drawLineToolStripMenuItem->Size = System::Drawing::Size(155, 22);
 			this->drawLineToolStripMenuItem->Text = L"Draw &Line";
@@ -327,7 +326,6 @@ namespace Projectpaint {
 			// 
 			// drawCircleToolStripMenuItem
 			// 
-			this->drawCircleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"drawCircleToolStripMenuItem.Image")));
 			this->drawCircleToolStripMenuItem->Name = L"drawCircleToolStripMenuItem";
 			this->drawCircleToolStripMenuItem->Size = System::Drawing::Size(155, 22);
 			this->drawCircleToolStripMenuItem->Text = L"Draw &Circle";
@@ -431,7 +429,9 @@ namespace Projectpaint {
 			this->Pencil->Name = L"Pencil";
 			this->Pencil->Size = System::Drawing::Size(23, 22);
 			this->Pencil->Text = L"Pencil";
-			this->Pencil->Click += gcnew System::EventHandler(this, &MyForm::Pencil_Click);
+			this->Pencil->Click += gcnew System::EventHandler(this, &MyForm::pictureBox_MouseEnter);
+			this->Pencil->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox_MouseMove);
+			this->Pencil->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox_MouseUp);
 			// 
 			// Fill
 			// 
@@ -611,15 +611,15 @@ namespace Projectpaint {
 				else if (drawState == DrawState::DrawEllipse)
 					drawState = DrawState::DrawingEllipse;
 				else if (drawState == DrawState::PencilDraw)
-					drawState = PencilDrawing;
+					drawState = DrawState::PencilDrawing;
 			case DrawState::FillBuget:
 				if (drawState == DrawState::FillBuget)
-					drawState = DrawStat::FillingBuget;
+					drawState = DrawState::FillingBuget;
 			}
 		}
 	}
 	private: System::Void pictureBox_MouseUp(System::Object^ sender, MouseEventArgs^ e) {
-		if ((drawState == DrawState::DrawingLine) || (drawState == DrawState::DrawingEllipse) || (drawState == DrawState::FillingBuget) || (drawState == DrawState::PincilDrawing)) {
+		if ((drawState == DrawState::DrawingLine) || (drawState == DrawState::DrawingEllipse) || (drawState == DrawState::FillingBuget) || (drawState == DrawState::PencilDrawing)) {
 			delete startPoint;
 			startPoint = nullptr;
 			delete bmp;
@@ -649,7 +649,6 @@ namespace Projectpaint {
                         drawState = DrawState::FillBuget;
                         Cursor = Cursors::Cross;
                 }
-
 	}
 };
 }
